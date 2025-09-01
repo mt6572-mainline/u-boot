@@ -38,10 +38,8 @@
 #define CLK_TOP_I2C2 5
 #define CLK_TOP_MSDC0 6
 #define CLK_TOP_MSDC1 7
-#define CLK_TOP_APXGPT 8
 
 #define CLK_MMSYS_PWM_MM 0
 #define CLK_MMSYS_PWM_26M 1
-
 
 #endif /* _DT_BINDINGS_CLK_MT6572_H */

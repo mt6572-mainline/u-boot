@@ -26,29 +26,11 @@
   };
 
   clocks {
-    #address-cells = <1>;
-    #size-cells = <1>;
-    ranges;
-
     system_clk: dummy13m {
-      compatible = "fixed-clock";
-      clock-frequency = <13000000>;
-      #clock-cells = <0>;
-    };
-
-    rtc32k: oscillator-0 {
-      compatible = "fixed-clock";
-      clock-frequency = <32000>;
-      #clock-cells = <0>;
-      clock-output-names = "rtc32k";
-    };
-
-    clk26m: oscillator-1 {
-      compatible = "fixed-clock";
-      #clock-cells = <0>;
-      clock-frequency = <26000000>;
-      clock-output-names = "clk26m";
-    };
+		  compatible = "fixed-clock";
+		  clock-frequency = <13000000>;
+		  #clock-cells = <0>;
+	  };
   };
 
   wdt-reboot {
@@ -63,6 +45,33 @@
     compatible = "simple-bus";
     ranges;
 
+    apmixedsys: clock-controller@10205000 {
+      compatible = "mediatek,mt6572-apmixedsys";
+      reg = <0x10205000	0x1000>;
+      #clock-cells = <1>;
+    };
+
+    topckgen: clock-controller@10000000 {
+      compatible = "mediatek,mt6572-topckgen";
+      reg = <0x10000000 0x1000>;
+      clock-parent = <&apmixedsys>;
+      #clock-cells = <1>;
+    };
+
+    topckgen_cg: clock-controller-cg@10000000 {
+      compatible = "mediatek,mt6572-topckgen-cg";
+      reg = <0x10000000 0x1000>;
+      clock-parent = <&topckgen>;
+      #clock-cells = <1>;
+    };
+
+    mmsys_cg: clock-controller-cg@14000000 {
+      compatible = "mediatek,mt6572-mmsys-cg";
+      reg = <0x14000000 0x1000>;
+      clock-parent = <&topckgen>;
+      #clock-cells = <1>;
+    };
+
     gic: interrupt-controller@10211000 {
       compatible = "arm,cortex-a7-gic";
       interrupt-controller;
@@ -74,43 +83,19 @@
             <0x10216000 0x2000>;
     };
 
-    topckgen: clock-controller@10000000 {
-      compatible = "mediatek,mt6572-topckgen";
-      reg = <0x10000000 0x1000>;
-      #clock-cells = <1>;
-    };
-
-    topckgen_cg: clock-controller-cg@10000000 {
-      compatible = "mediatek,mt6572-topckgen-cg";
-      reg = <0x10000000 0x1000>;
-      #clock-cells = <1>;
-    };
-
-    apmixedsys: clock-controller@10205000	 {
-      compatible = "mediatek,mt6572-apmixedsys";
-      reg = <0x10205000	0x1000>;
-      #clock-cells = <1>;
-    };
-
-    mmsys_cg: clock-controller-cg@14000000 {
-      compatible = "mediatek,mt6572-mmsys-cg";
-      reg = <0x14000000 0x1000>;
-      #clock-cells = <1>;
-    };
-
     wdt: watchdog@10007000 {
       compatible = "mediatek,mt6572-wdt";
       reg = <0x10007000 0x1000>;
       timeout-sec = <15>;
-      interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_LOW>;
+      interrupts = <GIC_SPI 126 IRQ_TYPE_EDGE_FALLING>;
     };
 
     gpt: timer@10008000 {
       compatible = "mediatek,mt6572-timer";
       reg = <0x10008000 0x1000>;
       interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_LOW>;
-      clocks = <&system_clk>, <&rtc32k>;
-      clock-names = "system-clk", "rtc32k";
+      clocks = <&system_clk>;
+      clock-names = "system-clk";
     };
 
     uart0: serial@11005000 {
@@ -118,8 +103,9 @@
       reg = <0x11005000 0x1000>;
       reg-shift = <2>;
       interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_LOW>;
-      // TODO: write a proper clock driver and nuke this
-      clocks = <&clk26m>;
+      clocks =  <&topckgen CLK_TOP_UART0_SEL>,
+                <&topckgen_cg CLK_TOP_UART0>;
+      clock-names = "baud", "bus";
       status = "disabled";
     };
 
@@ -128,19 +114,20 @@
       reg = <0x11006000 0x1000>;
       reg-shift = <2>;
       interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
-      // TODO: write a proper clock driver and nuke this
-      clocks = <&clk26m>;
+      clocks =  <&topckgen CLK_TOP_UART1_SEL>,
+                <&topckgen_cg CLK_TOP_UART1>;
+      clock-names = "baud", "bus";
       status = "disabled";
     };
     
     /*    
     pinctrl: pinctrl@10005000 {
       compatible = "mediatek,mt6572-pinctrl";
-      reg = <0x10005000 0x1000>,
-            <0x10208000 0x1000>,
-            <0x10209000 0x1000>,
-            <0x1020a000 0x1000>,
-            <0x1020b000 0x1000>;
+      reg = <0x10005000 0x1000>, // GPIO
+            <0x10208000 0x1000>, // IOCFG_T
+            <0x10209000 0x1000>, // IOCFG_B
+            <0x1020a000 0x1000>, // IOCFG_L
+            <0x1020b000 0x1000>; // IOCFG_R
       reg-names = "gpio", 
                   "iocfg_t",
                   "iocfg_b", 
