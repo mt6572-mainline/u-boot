@@ -460,8 +460,8 @@ config TWL4030_POWER
 	The TWL4030 in a combination audio CODEC/power management with
 	GPIO and it is commonly used with the OMAP3 family of processors
 
-config POWER_MT6323
-	bool "Poweroff driver for mediatek mt6323"
+config POWEROFF_MT6323
+	bool "Poweroff driver for MT6323"
 	select CMD_POWEROFF
 	help
 	  This adds poweroff driver for mt6323

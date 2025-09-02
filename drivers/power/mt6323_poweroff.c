@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
+ * Poweroff driver for MT6323 PMIC.
+ * Currently supports MT6572 that is paired with this PMIC.
  * Copyright (C) 2019 Frank Wunderlich <frank-w@public-files.de>
  */
 
@@ -26,11 +28,18 @@ int do_poweroff(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	mdelay(10);
 
 	val = PWRAP_CALC(MT6323_PWRC_BASE + RTC_WRTGR, 1);
-	printf("%s: powering off...\n", __func__);
+	printf("Trying to power off...\n");
 	writel(val, addr);
 	
-	/* If poweroff is successful, this code is never reached */
-	mdelay(1000);
-	printf("%s: failed to power off\n", __func__);
+	/* 
+	 * We can't poweroff as long as we have USB
+	 * plugged in; after an unsuccessful attempt, the
+	 * device will immediatelly power off whenever USB is unplugged.
+	 *
+	 * This won't be reached if poweroff is successful on first try (USB unplugged)
+	 */
+	mdelay(300);
+	printf("Failed to power off.\n");
+	printf("The device will power off after USB is unplugged.\n");
 	return 1;
 }
