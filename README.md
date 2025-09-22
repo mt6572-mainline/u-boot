@@ -5,7 +5,7 @@
 
 ## Status
 ### What works
-* Basic booting and relocation
+* Basic booting and relocation, poweroff, reset
 * UART
 
 ### What doesn't
