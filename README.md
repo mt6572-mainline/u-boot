@@ -30,7 +30,7 @@ Instead of flashing U-Boot to the eMMC of your device, you can also boot it as D
 ARCH=arm CROSS_COMPILE=arm-none-eabi- make mt6572_defconfig mt6572_da.config
 ARCH=arm CROSS_COMPILE=arm-none-eabi- make -j$(nproc)
 ```
-2. Use `u-boot.bin` (without the LK header) with [this fork](https://github.com/mt6572-mainline/mtkclient) of `mtkclient`:
+2. Use [this fork of mtkclient](https://github.com/mt6572-mainline/mtkclient) with `u-boot.bin` (without the LK header):
 ```
 ./mtk.py plstage --preloader u-boot.bin
 ```
