@@ -24,13 +24,17 @@ mtk w uboot u-boot-mtk.bin
 ```
 
 ### Booting as DA
-Instead of flashing U-Boot to the eMMC of your device, you can also boot it as DA using `mtkclient`.
-1. Build U-Boot with `mt6572_da.config` fragment:
+Instead of flashing U-Boot to the eMMC of your device, you can also boot it as the Download Agent (DA).
+1. Build U-Boot with `mt6572_defconfig` and `mt6572_da.config` config fragment:
 ```
 ARCH=arm CROSS_COMPILE=arm-none-eabi- make mt6572_defconfig mt6572_da.config
 ARCH=arm CROSS_COMPILE=arm-none-eabi- make -j$(nproc)
 ```
 2. Use [this fork of mtkclient](https://github.com/mt6572-mainline/mtkclient) with `u-boot.bin` (without the LK header):
 ```
-./mtk.py plstage --preloader u-boot.bin
+./mtk.py plstage --preloader /path/to/u-boot.bin
+```
+Or, use [our Rust tool](https://github.com/mt6572-mainline/u-boot-da):
+```
+cargo r --release -- /path/to/u-boot.bin
 ```
