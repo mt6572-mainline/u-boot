@@ -1,6 +1,6 @@
-# "Das U-Boot" for MediaTek MT6572
-# Devices that this was tested with
-* JTY D101
+# U-Boot fork for MediaTek MT6572
+Supported devices:
+* JTY D101 (tablet)
 * ...
 
 ## Status
