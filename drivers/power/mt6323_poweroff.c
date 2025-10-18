@@ -39,7 +39,6 @@ int do_poweroff(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	 * This won't be reached if poweroff is successful on first try (USB unplugged)
 	 */
 	mdelay(300);
-	printf("Failed to power off.\n");
 	printf("The device will power off after USB is unplugged.\n");
 	return 1;
 }
