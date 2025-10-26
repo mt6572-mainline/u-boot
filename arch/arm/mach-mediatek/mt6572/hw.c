@@ -43,6 +43,9 @@ void uart1_gpio_init(void)
   val &= ~(0x7 << 0);
   val |=  (0x1 << 0); 
   writel(val, 0x100053d0);
+  
+  /* Zero ESCAPE_EN (escape character enable) */
+  writel(0, 0x11005044);
 }
 
 void mtk_gpt_early_init(void)

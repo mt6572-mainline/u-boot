@@ -3,6 +3,8 @@
 #include <config.h>
 #include <asm/global_data.h>
 #include <fdt_support.h>
+#include <vsprintf.h>
+#include <dm.h>
 
 #include "hw.h"
 
@@ -17,8 +19,17 @@ void board_debug_uart_init(void)
   mtk_gpt_early_init();
 }
 
-int board_init(void)
+int board_late_init(void)
 {
+	struct udevice *dev;
+	int ret;
+
+	ret = uclass_get_device(UCLASS_USB_GADGET_GENERIC, 0, &dev);
+	if (ret) {
+		printf("%s: Failed to find USB device (err %d)\n", __func__, ret);
+		return ret;
+  }
+  
   return 0;
 }
 
