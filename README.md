@@ -8,9 +8,11 @@ Supported devices:
 * Basic booting and relocation, poweroff, reset
 * UART
 * USB (MUSB by Mentor Graphics)
+* PMIC power key
 
 ### What doesn't
-* Everything else
+* GPIO keys
+* ...
 
 ## Installation/running
 ### Flashing to the eMMC
