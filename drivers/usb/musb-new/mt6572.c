@@ -28,6 +28,7 @@
 #include "musb_io.h"
 
 #define to_mtk_musb_glue(d)	container_of(d, struct mtk_musb_glue, dev)
+
 /* Registers */
 #define USB_L1INTS		    0x00a0
 #define USB_L1INTM		    0x00a4
@@ -119,10 +120,6 @@ static irqreturn_t mtk_musb_interrupt(int irq, void *dev_id)
 	if (l1_ints & (TX_INT_STATUS | RX_INT_STATUS | USBCOM_INT_STATUS))
 		retval = generic_interrupt(irq, musb);
 
-#if defined(CONFIG_USB_INVENTRA_DMA)
-	if (l1_ints & DMA_INT_STATUS)
-		retval = dma_controller_irq(irq, musb->dma_controller);
-#endif
 	return retval;
 }
 
@@ -134,9 +131,10 @@ int mtk_musb_platform_init(struct musb *musb)
 	musb->isr = mtk_musb_interrupt;
 	/* reset */
 	musb_writeb(musb->mregs, MUSB_FADDR, 0);
-    musb_writeb(musb->mregs, MUSB_POWER, MUSB_POWER_RESET);
-    mdelay(10);
-    musb_writeb(musb->mregs, MUSB_POWER, 0);
+  musb_writeb(musb->mregs, MUSB_POWER, MUSB_POWER_RESET);
+  mdelay(10);
+  musb_writeb(musb->mregs, MUSB_POWER, 0);
+	
 	udelay(100);
 	musb_writeb(musb->mregs, MUSB_DEVCTL, MUSB_DEVCTL_BDEVICE);
 
@@ -325,7 +323,6 @@ static struct musb_hdrc_config musb_config = {
 	.multipoint	    = true,
 	.dyn_fifo	    = true,
 	.num_eps	    = 4,
-	// TODO: 16
 	.ram_bits	    = 11,
 };
 
