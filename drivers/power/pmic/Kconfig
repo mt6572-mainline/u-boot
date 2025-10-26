@@ -454,6 +454,13 @@ config SPL_POWER_TPS62362
 	default y if POWER_TPS62362
 	depends on SPL
 
+config MTK_PWRAP
+	bool "Enable support for MediaTek PMIC wrap (PWRAP)"
+
+config MTK_PMIC
+	bool "Enable support for MediaTek PMIC"
+	depends on MTK_PWRAP
+
 config SPL_POWER_TPS65910
 	bool "Enable legacy driver for TPS65910 PMIC in SPL"
 	depends on SPL

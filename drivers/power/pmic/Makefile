@@ -3,6 +3,8 @@
 # Copyright (C) 2012 Samsung Electronics
 # Lukasz Majewski <l.majewski@samsung.com>
 
+obj-$(CONFIG_MTK_PWRAP) += mtk_pwrap.o
+obj-$(CONFIG_MTK_PMIC) += mtk_pmic.o
 obj-$(CONFIG_$(PHASE_)DM_PMIC) += pmic-uclass.o
 obj-$(CONFIG_$(PHASE_)DM_PMIC_FAN53555) += fan53555.o
 obj-$(CONFIG_$(PHASE_)DM_PMIC_DA9063) += da9063.o
