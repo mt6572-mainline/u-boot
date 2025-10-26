@@ -48,4 +48,16 @@ config BUTTON_QCOM_PMIC
 	  on Qualcomm SoCs. These will be configured as the Enter and Down keys
 	  respectively, allowing navigation of bootmenu with buttons on device.
 
+config BUTTON_MTK_PMIC
+	bool "MediaTek power button"
+	depends on BUTTON
+	depends on BUTTON_REMAP_PHONE_KEYS
+	depends on MTK_PWRAP
+	depends on MTK_PMIC
+	help
+	  Enable support for the power key on MediaTek PMICs.
+	  Currently only supports MT6323.
+	  This key will be configured as the Enter key, allowing
+	  to confirm choice in a bootmenu and reset when held.
+
 endmenu
