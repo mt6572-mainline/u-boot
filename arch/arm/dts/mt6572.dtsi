@@ -1,5 +1,7 @@
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/phy/phy.h>
+
 #include <dt-bindings/clock/mt6572-clk.h>
 
 / {
@@ -26,11 +28,18 @@
   };
 
   clocks {
-    system_clk: dummy13m {
+    system_clk: fixed-factor-13m {
 		  compatible = "fixed-clock";
 		  clock-frequency = <13000000>;
 		  #clock-cells = <0>;
 	  };
+
+    clk26m: oscillator-26m {
+      compatible = "fixed-clock";
+      #clock-cells = <0>;
+      clock-frequency = <26000000>;
+      clock-output-names = "clk26m";
+    };
   };
 
   wdt-reboot {
@@ -120,6 +129,41 @@
       status = "disabled";
     };
     
+    pwrap: pwrap@1000f000 {
+      compatible = "mediatek,mt6572-pwrap";
+      reg = <0x1000f000 0x1000>;
+    };
+
+    usb0: usb@11100000 {
+		  compatible = "mediatek,mt6572-musb";
+		  reg = <0x11100000 0x1000>;
+		  reg-names = "control";
+      interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_LOW>;
+		  interrupt-names = "mc";
+		  clocks = <&clk26m>, <&clk26m>, <&clk26m>;
+      clock-names = "usbpll", "usbmcu", "usb";
+      phys = <&u2port0 PHY_TYPE_USB2>;
+		  phy-names = "usb";
+		  status = "disabled";
+	  };
+
+    u2phy: t-phy@11110000 {
+		  compatible = "mediatek,generic-tphy-v1";
+		  reg = <0x11110000 0x0700>;
+      #address-cells = <1>;
+		  #size-cells = <1>;
+		  ranges;
+
+		  status = "disabled";
+
+		  u2port0: usb-phy@11110800 {
+			  reg = <0x11110800 0x0100>;
+			  clocks = <&clk26m>;
+			  clock-names = "ref";
+			  #phy-cells = <1>;
+		  };
+	  };
+
     /*    
     pinctrl: pinctrl@10005000 {
       compatible = "mediatek,mt6572-pinctrl";
@@ -138,11 +182,6 @@
         gpio-controller;
         #gpio-cells = <2>;
       };
-    };
-    
-    pwrap: pwrap@1000f000 {
-      compatible = "mediatek,mt6572-pwrap";
-      reg = <0x1000f000 0x1000>;
     };
     
     mmc0: mmc@11120000 {
