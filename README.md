@@ -1,12 +1,13 @@
 # U-Boot fork for MediaTek MT6572
 Supported devices:
 * JTY D101 (tablet)
-* ...
+* Lenovo A369i
 
 ## Status
 ### What works
 * Basic booting and relocation, poweroff, reset
 * UART
+* USB (MUSB by Mentor Graphics)
 
 ### What doesn't
 * Everything else
